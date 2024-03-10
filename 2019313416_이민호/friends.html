@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>friends</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // 아래 이벤트 적용이 왜 안되지
+            
+            $.get("/current_user", function(data){
+                console.log("user name:"+data);
+                $("#user_name").text(data);
+            });
+            $.getJSON("/getgroupslist",function(data){
+                if(data.length==0){
+                    console.log("no group");
+                    return;
+                }
+                const jsonArray = JSON.parse(data);
+                jsonArray.forEach(element => {
+                    console.log('group'+element);
+                    var name=element;
+                    var lastChatContent;
+                    $.ajax({
+                        url:'/getlastgroupchat',
+                        type:'get',
+                        data:{group_name:element+"[group]"},
+                        success: function(data, textStatus, xhr){
+                            // console.log("success to get last chat");
+                            // console.log(data);
+                            if(data!="No chat"){
+                                const htmlString = data;
+                                const matchPhoto=htmlString.match(/<img class="send_img"((.|[\n\r])*?)"/);
+                                const matchYellow = htmlString.match(/<div class="yellow">((.|[\n\r])*?)<\/div>/);
+                                const matchWhite = htmlString.match(/<div class="yellow">((.|[\n\r])*?)<\/div>/);
+                                if(matchPhoto){
+                                    lastChatContent = "사진을 보냈습니다";
+                                }
+                                else{
+                                    // .yellow 클래스를 먼저 찾고, 없으면 .white 클래스 사용
+                                    if (matchYellow) {
+                                    lastChatContent = matchYellow[1].trim();
+                                    } else if (matchWhite) {
+                                    lastChatContent = matchWhite[1].trim();
+                                    } else {
+                                    console.error('마지막 채팅이 없습니다.');
+                                    }
+                                }   
+                                // console.log(lastChatContent);
+                                var friend_list="<div class='freind_list'><div class='friend_ele' ondblclick='toGroupChat(event)'><div class='picture'><img src='./static/그룹채팅.jpg'width='50px' height='50px'></div><div class='name'>"+
+                                    name+
+                                    "</div><div class='last_chat'>"+lastChatContent+"</div></div></div>";
+                                $("#friends").append(friend_list);
+                            }
+                            else{
+                                console.log("noss chat");
+                            }
+                            
+                        },
+                    })
+
+                });
+            });
+            $.getJSON("/getfriendslist", function(data){
+                if(data.length==0){
+                    var name="친구가 없습니다.";
+                    var friend_list="<div class='freind_list'><div class='friend_ele' ondblclick='toChat(event)'><div class='picture'><img src='./static/프로필사진.jpg'width='50px' height='50px'></div><div class='name'>"+
+                        name+
+                        "</div><div class='last_chat'></div></div></div>";
+                    $("#friends").append(friend_list);
+                    return;
+                }
+                const jsonArray = JSON.parse(data);
+                jsonArray.forEach(element => {
+                    // console.log(element);
+                    var for_group="<input type='checkbox' class='member' value="+element+">"+element+'<br>';
+                    $("#check_member").append(for_group);
+                    var name=element;
+                    var lastChatContent;
+                    $.ajax({
+                        url:'/getlastchat',
+                        type:'get',
+                        data:{friend_name:element},
+                        success: function(data, textStatus, xhr){
+                            // console.log("success to get last chat");
+                            // console.log(data);
+                            if(data!="No chat"){
+                                const htmlString = data;
+                                const matchPhoto=htmlString.match(/<img class="send_img"((.|[\n\r])*?)"/);
+                                const matchYellow = htmlString.match(/<div class="yellow">((.|[\n\r])*?)<\/div>/);
+                                const matchWhite = htmlString.match(/<div class="yellow">((.|[\n\r])*?)<\/div>/);
+                                // .yellow 클래스를 먼저 찾고, 없으면 .white 클래스 사용
+                                if(matchPhoto){
+                                    console.log("사진");
+                                    lastChatContent = "사진을 보냈습니다";
+                                }
+                                else{
+                                    // .yellow 클래스를 먼저 찾고, 없으면 .white 클래스 사용
+                                    if (matchYellow) {
+                                    lastChatContent = matchYellow[1].trim();
+                                    } else if (matchWhite) {
+                                    lastChatContent = matchWhite[1].trim();
+                                    } else {
+                                    console.error('마지막 채팅이 없습니다.');
+                                    }
+                                }  
+                                // console.log(lastChatContent);
+                                $.ajax({
+                                    url:'/getProfileInfo',
+                                    type:'get',
+                                    data:{thisPerson:element},
+                                    success: function(data, textStatus, xhr){
+                                        // console.log("success to get profile");
+                                        console.log(data);
+                                        if(data[1]=="empty"){
+                                            data[1]="./static/프로필사진.jpg";
+                                        }
+                                        var friend_list="<div class='freind_list'><div class='friend_ele' ondblclick='toChat(event)'><div class='picture' onclick='toProfile()'><img src='"+data[1]+"'width='50px' height='50px'></div><div class='name'>"+
+                                            name+
+                                            "</div><div class='last_chat'>"+lastChatContent+"</div></div></div>";
+                                        $("#friends").append(friend_list);
+                                    },
+                                })
+                            }
+                            else{
+                                console.log("no chat");
+                            }
+                            
+                        },
+                    })
+
+                });
+
+            });
+
+            $(function(){
+                $("#popup_btn1").click(function(){
+                    modalClose1(); //모달 닫기 함수 호출
+                    
+                    //컨펌 이벤트 처리
+                });
+                $("#add_friend").click(function(){        
+                    $("#popup").css('display','flex').hide().fadeIn();
+                    //팝업을 flex속성으로 바꿔준 후 hide()로 숨기고 다시 fadeIn()으로 효과
+                });
+                $("#popup_btn2").click(function(){
+                    modalClose2(); //모달 닫기 함수 호출
+                });
+                function modalClose1(){
+                    $("#popup").fadeOut(); //페이드아웃 효과
+                    var friend_name=$("#popup_friend_name").val();
+                    $("#popup_friend_name").val(''); //input 초기화
+                    $.ajax({
+                        url: "/addfriend",
+                        type: "post",
+                        contentType: "application/json",
+                        data: JSON.stringify({ friendname: friend_name }),
+                        success: function (data, textStatus, xhr) {
+                            alert("Friend added successfully");
+                            location.reload();  // 페이지 새로고침
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log("error to push"+friend_name+"to friend list");
+                            alert("Failed to add friend");
+                        }
+                    });
+                }
+                function modalClose2(){
+                    $("#popup").fadeOut(); //페이드아웃 효과
+                    $("#popup_friend_name").val(''); //input 초기화
+                }
+            });
+            $(function(){
+                $("#group_popup_btn1").click(function(){
+                    group_modalClose1(); //모달 닫기 함수 호출
+                    
+                    //컨펌 이벤트 처리
+                });
+                $("#add_group").click(function(){        
+                    $("#group_popup").css('display','flex').hide().fadeIn();
+                    //팝업을 flex속성으로 바꿔준 후 hide()로 숨기고 다시 fadeIn()으로 효과
+                });
+                $("#group_popup_btn2").click(function(){
+                    group_modalClose2(); //모달 닫기 함수 호출
+                });
+                function group_modalClose1(){
+                    $("#group_popup").fadeOut(); //페이드아웃 효과
+                    var group_name=$("#popup_group_name").val();
+                    $("#popup_group_name").val(''); //input 초기화\
+                    console.log(group_name);
+                    const checkboxes = document.querySelectorAll('.member');
+                    const checkedCheckboxes = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+                    const selectedUsers = checkedCheckboxes.map(checkbox => checkbox.value);
+                    console.log(typeof(selectedUsers));
+                    if (selectedUsers.length > 0) {
+                        console.log('Selected Users:', selectedUsers);
+                        $.ajax({
+                            url: "/addgroup",
+                            type: "post",
+                            contentType: "application/json",
+                            data: JSON.stringify({ groupname: group_name, members: selectedUsers }),
+                            success: function (data, textStatus, xhr) {
+                                alert("Group added successfully");
+                                location.reload();  // 페이지 새로고침
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                console.log("error to push"+group_name+"to group list");
+                                alert("Failed to add group");
+                            }
+                        });
+                    } else {
+                        console.log('No users selected.');
+                    }
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+
+                }
+                function group_modalClose2(){
+                    $("#group_popup").fadeOut(); //페이드아웃 효과
+                    $("#group_popup_friend_name").val(''); //input 초기화
+                }
+            });
+            
+        });
+        function toChat(){
+            // alert("Double click event triggered!");
+            var friend_name=event.target.children[1].innerText;
+            console.log(friend_name);
+            $.ajax({
+                url:"/friendchat/"+friend_name,
+                type:"get",
+                success: function(data, textStatus, xhr){
+                    console.log("success to get friend chat");
+                    window.location="/friendchat/"+friend_name;
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    console.log("error to get friend chat");
+                }
+
+            })
+            // 여기에 더블 클릭 시 수행할 동작을 추가할 수 있습니다.
+        }
+        function toGroupChat(){
+            // alert("Double click event triggered!");
+            var group_name = event.target.children[1].innerText.replace("[group]", "");
+            console.log("ggname"+group_name);
+            console.log(group_name);
+            $.ajax({
+                url:"/groupchat/"+group_name,
+                type:"get",
+                success: function(data, textStatus, xhr){
+                    console.log("success to get group chat");
+                    window.location="/groupchat/"+group_name+"[group]";
+                },
+                error: function(xhr, textStatus, errorThrown){
+                    console.log("error to get group chat");
+                }
+
+            })
+            // 여기에 더블 클릭 시 수행할 동작을 추가할 수 있습니다.
+        }
+
+    </script>
+    <style>
+        #wrapper {
+            padding: 10px 10px 10px 10px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #container {
+            border: 3px solid #ffffff;
+            border-radius: 8px;
+            margin: 10px 10px 10px 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            height: 512px;
+            width: 320px;
+        }
+        #friends {
+            background-color: #2b6652;
+            height: 420px;
+            width: 298px;
+            overflow: scroll;
+            padding: 10px 10px 10px 10px;
+            border: 1px solid rgb(200, 197, 197);
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            border-bottom: none;
+        }
+        #footer{
+            width: 318px;
+            height: 80px;
+            display: flex;
+            background-color: #1e473a;
+            border: 1px solid rgb(200, 197, 197);
+            justify-content:space-evenly;
+            align-items: center;
+            flex-direction: row;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        img{
+            border-radius: 10px;
+        }
+        .friend_list{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: col;
+            overflow:scroll;
+        }
+        .picture{
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #000000;
+            margin: 10px 10px 10px 10px;
+        }
+        .name{
+            margin: 10px 10px 10px 10px;
+            font-size: 15px;
+            font-weight: bold;
+            overflow: auto;
+            word-break: break-all  ;
+            max-width: 50px;
+        }
+        .last_chat{
+            white-space: nowrap;        /* 줄 바꿈 금지 */
+            overflow: hidden;           /* 넘치는 부분 숨김 */
+            text-overflow: ellipsis;    /* 넘치는 텍스트에 ... 표시 */
+            font-size: 12px;
+            max-width: 100px;
+            max-height: 55px;
+            margin: 10px 10px 10px 10px;
+        }
+        .friend_ele{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: row;
+            width: 100%;
+            height: 70px;
+            border-bottom: 1px solid rgb(200, 197, 197);
+        }
+        #chat_list{
+            background-color: #4ba387;
+            border: none;
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            width: 100px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        #firend_list{
+            background-color: #2b6652;
+            border: none;
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            width: 100px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        #log_out{
+            background-color: #2b6652;
+            border: none;
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 10px 20px;
+            width: 100px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+       .popup-wrap,.group_popup-wrap{
+        background-color:rgba(0,0,0,.3); 
+
+        /* //배경색과 투명도로 살짝 어둡지만 투명한 배경
+        //허공에 붕 떠있는 느낌을 주고 싶으면 안넣어도 무방 */
+        justify-content:center; 
+        /* //수평 중앙정렬 */
+        align-items:center;    
+         /* //수직 중앙정렬 */
+        position:fixed;         
+        /* // 포지션 픽스, 화면이 스크롤되더라도 고정되기 위함 */
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;               
+        /* //모든 방향에 0을 주면 화면에 꽉차게 됩니다. */
+        display:none; 
+        /* //이벤트가 발생할 때 띄우기 위해 숨김 */
+        /* //처음부터 보이게 하는 상황이라면 display:flex; */
+        padding:15px; 
+        /* //반응형의 경우 padding이 없으면 박스가 화면에 붙어서 안이뻐짐 */
+        }
+        .popup,.group_popup{
+        width:100%;               
+        /* //반응형 이기 때문에 가로값은 100% */
+        max-width:400px;          
+        /* //팝업의 최대 크기지정 */
+        border-radius:10px;       
+        /* //둥글둥글한 디자인을 위해 각을 없앱니다. */
+        overflow:hidden;          
+        /* //각을 없앴을 때 내부 영역이 튀어나오는걸 방지 */
+        background-color:#ffffff; 
+        border: #2b6652 5px solid;
+        /* //배경색 */
+        /* //팝업이 허공에 떠있는 듯한 느낌을 주기 위한 그림자 효과. */
+        box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3); 
+        }
+        .popup-head,.group_popup-head{                     
+            /* //머리 */
+        width:100%;
+        /* //부모요소를 따라가기 때문에 굳이 가로값을 주지 않아도 되지만 일부 ie에서 인식 못하는 문제가 있음 */
+        height:50px;  
+        /* //헤드 영역 높이 */
+        display:flex; 
+        /* //로고 이미지나 텍스트를 중앙 정렬하기 위한 flex 및 정렬 */
+        align-items:center;
+        justify-content:center;
+        }
+        .popup-body.group_popup-body{          
+            /* //몸통 */
+        width:100%;
+        background-color:#ffffff; 
+        /* //컨텐츠 영역의 배경색 */
+        }
+        .body-content{              
+            /* //몸통 내부 컨텐츠 영역 */
+            width: 80%;
+            padding-top: 20px;
+            padding-bottom: 5px;
+            padding-left: 10%;
+            padding-right: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+           
+        /* //좌우에 내용이 붙으면 보기 안좋기 때문에 간격 띄움 */
+        }
+        .body-contentbox{         
+        text-align: center;
+        
+        color: #2b6652;
+        font-weight: bold;
+        word-break:break-word;    
+        /* //단어가 짤리지 않음 */
+        overflow-y:auto;          
+        /* //내부요소가 지정한 세로 값보다 클 경우 스크롤 생성 */
+        min-height:100px;         
+        /* //최소 높이 */
+        max-height:200px;         
+        /* //최대 높이 */
+        }
+        .popup-foot,.group_popup-foot{                     
+             /* //다리 */
+        width:100%;
+        height:50px;
+        text-align: center;
+        }
+        #popup_btn1, #popup_btn2, #group_popup_btn1, #group_popup_btn2{
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            border: none;
+            background-color: #2b6652;
+            color: white;
+        }
+        #plus_container{
+            display: flex;
+            justify-content:space-between;
+            align-items: center;
+            flex-direction: row;
+            width: 100%;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+        .plus-button {
+            float: left;
+            width: 30px;
+            height: 30px;
+            background-color: #1e473a;
+            color: #fff;
+            text-align: center;
+            font-size: 20px;
+            line-height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #add_group{
+            background-color: #1e473a;
+            border: none;
+            border-radius: 10px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px;
+            width: 40px;
+            font-size: 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+        }
+        #check_member{
+            width: 200px;
+            height: 100px;
+            border: #2b6652 1px solid;
+            overflow: scroll;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup-wrap" id="popup">
+        <div class="popup">
+            <div class="popup-head">
+                <h2 style="color: #2b6652;">친구 추가</h2>
+            </div>
+            <div class="popup-body">
+                <div class="body-content">
+                    <div class="body-contentbox">
+                        <label for="popup_friend_name" style="margin: 10px;">친구 이름:  </label><br>
+                        <input type="text" name="friend" id="popup_friend_name" style="margin: 10px;">
+                    </div>
+                </div>
+            </div>
+            <div class="popup-foot">
+                <button id="popup_btn1">추가</button>
+                <button id="popup_btn2">닫기</button>
+            </div>
+        </div>
+    </div>
+    <div class="group_popup-wrap" id="group_popup">
+        <div class="group_popup">
+            <div class="group_popup-head">
+                <h2 style="color: #2b6652;">그룹 추가</h2>
+            </div>
+            <div class="group_popup-body">
+                <div class="body-content">
+                    <div class="body-contentbox" id="choose_member">
+                        <label for="popup_group_name" style="margin: 10px;">그룹 이름:  </label><br>
+                        <input type="text" name="friend" id="popup_group_name" style="margin: 10px;"><br>
+                        <div id="check_member"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="group_popup-foot">
+                <button id="group_popup_btn1">추가</button>
+                <button id="group_popup_btn2">닫기</button>
+            </div>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div id="container">
+            <p id="user_name" style="display: none;"></p>
+            <div id="friends">
+                <div id="plus_container">
+                    <div class="plus-button" id="add_friend">+</div>
+                    <span style="color: white; font-weight: bolder; font-size: 20px;">SKKU CHAT</span>
+                    <div id="add_group">+그룹</div>
+                </div>
+                <!-- <div class="freind_list">
+                    <div class="friend_ele">
+                        <div class="picture">
+                            
+                        </div>
+                        <div class="name">alsh</div>
+                        <div class="last_chat">adsffads</div>
+                    </div>
+                </div> -->
+            </div>
+
+            <div id="footer">
+                
+                <input type="button" value="친구 목록" id="firend_list">
+                <input type="button" value="채팅 목록" id="chat_list" >
+                <a href="/logout"><input type="button" value="로그 아웃" id="log_out"></a>
+                <script>
+                    $("#firend_list").click(function(){
+                        window.location="/";
+                    });
+                    $("#chat_list").click(function(){
+                        window.location="/chatlist";
+                    });
+                </script>
+
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

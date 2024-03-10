@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../static/function.js"></script>
+    <link rel="stylesheet" href="../static/style.css" />
+    <!-- <script src="{{url_for('static',path='/function.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static',path='./style.css')}}" /> -->
+    <title>chatRoom</title>
+    <style>
+      #btn_container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      #member_list {
+
+        margin: 10px 10px 10px 10px;
+        width: 200px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+      <div class="popup-wrap" id="popup">
+        <div class="popup">
+            <div class="popup-head">
+                <h2 style="color: #2b6652;">사진 전송</h2>
+            </div>
+            <div class="popup-body">
+                <div class="body-content">
+                    <div class="body-contentbox">
+                        <label for="send_image" style="margin: 10px;">사진 선택:  </label><br>
+                        <input type="file" name="send_image" id="send_image" style="margin: 10px;">
+                    </div>
+                </div>
+            </div>
+            <div class="popup-foot">
+                <button id="popup_btn1">추가</button>
+                <button id="popup_btn2">닫기</button>
+            </div>
+        </div>
+    </div>
+      <div class="popup-wrap" id="popup_img">
+        <div class="popup_for_img">
+                <div class="body-content">
+                    <div class="body-image">
+                      <img id="popup_image_content" src="" alt="없습니다.">
+                    </div>
+                </div>
+            <div class="popup-foot">
+                <button id="popup_btn_close">닫기</button>
+            </div>
+        </div>
+    </div>
+    <div id="wrapper">
+      
+      <div id="name_wrapper">
+        <p id="client_name" style="display: none;"></p>
+        <p id="friend_name" style="display: none;"></p>
+      </div>
+      
+      <div id="chat-container">
+
+        <div id="chat-content">
+        </div>
+          
+        <div class="chat-input">
+          <textarea name="" id="textarea1" onkeydown="enterToSend(event)"></textarea>
+          <div id="btn_container">
+          <button id="back_btn" onclick="backBtn()">뒤로</button>
+          <button id="photo_btn">사진 전송</button>
+          <button id="send_btn" onclick="sendMessage()">전송</button>
+          </div>
+        </div>
+      </div>
+      <div id="member_list" style="display: none;">
+        <p id="isGroup"></p>
+        <ul id="members">
+        </ul>
+      </div>
+  </div>
+  </body>
+</html>

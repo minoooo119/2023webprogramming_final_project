@@ -1,0 +1,353 @@
+#user-id {
+    margin: 10px 10px 10px 10px;
+}
+
+input[type="submit"] {
+    background-color: #fee500;
+    border: none;
+    border-radius: 10px;
+    color: #3c1e1e;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    border: inset 2px #e1e0e0;
+    resize: none;
+    outline: none;
+    border-radius: 8px;
+    color: black;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    width: 200px;
+}
+
+#wrapper {
+    padding: 10px 10px 10px 10px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items:flex-start;
+    flex-direction: row;
+}
+
+#chat-container {
+    margin: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    height: 530px;
+    width: 300px;
+}
+
+#chat-content {
+    background-color: #2b6652;
+    height: 390px;
+    width: 298px;
+    overflow: scroll;
+    padding: 10px 10px 10px 10px;
+    border: 1px solid rgb(200, 197, 197);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom: none;
+}
+
+#client_name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 10px 10px 10px;
+}
+
+#client_friend_name {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 10px 10px 10px 10px;
+}
+
+.chat-input {
+    width: 320px;
+    height: 150px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+textarea {
+    border: solid 1px rgb(200, 197, 197);
+    width: 314px;
+    height: 96px;
+    resize: none;
+    outline: none;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    white-space: pre-wrap;
+}
+
+#btn {
+    background-color: #fee500;
+    border: none;
+    border-radius: 10px;
+    color: #3c1e1e;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.user_chat {
+    float: right;
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+}
+
+.yellow {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    background-color: #fef01b;
+    border-radius: 6px;
+    max-width: 160px;
+    padding: 10px 10px 10px 10px;
+    float: right;
+    font-size: 14px;
+}
+
+.user_time {
+    float: right;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.friend_wrapper {
+    float: left;
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+}
+
+.friend_chat {
+    float: left;
+    clear: both;
+    margin-top: 3px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+}
+
+
+.white {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    background-color: white;
+    max-width: 160px;
+    border-radius: 6px;
+    padding: 10px 10px 10px 10px;
+    float: left;
+    font-size: 14px;
+}
+
+.friend_time {
+    float: right;
+    margin-left: 8px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.friend_name {
+    float: left;
+    margin-left: 5px;
+    font-size: 12px;
+    font-weight: bold;
+
+}
+#send_btn{
+    background-color: #2b6652;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 100px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+#back_btn {
+    background-color: #2b6652;
+    border: none;
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    width: 100px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+#photo_btn {
+    background-color: #2b6652;
+    border: none;
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 20px;
+    width: 100px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.popup-wrap{
+    background-color: rgba(0, 0, 0, .3);
+
+    /* //배경색과 투명도로 살짝 어둡지만 투명한 배경
+        //허공에 붕 떠있는 느낌을 주고 싶으면 안넣어도 무방 */
+    justify-content: center;
+    /* //수평 중앙정렬 */
+    align-items: center;
+    /* //수직 중앙정렬 */
+    position: fixed;
+    /* // 포지션 픽스, 화면이 스크롤되더라도 고정되기 위함 */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* //모든 방향에 0을 주면 화면에 꽉차게 됩니다. */
+    display: none;
+    /* //이벤트가 발생할 때 띄우기 위해 숨김 */
+    /* //처음부터 보이게 하는 상황이라면 display:flex; */
+    padding: 15px;
+    /* //반응형의 경우 padding이 없으면 박스가 화면에 붙어서 안이뻐짐 */
+}
+
+.popup,
+.group_popup {
+    width: 100%;
+    /* //반응형 이기 때문에 가로값은 100% */
+    max-width: 400px;
+    /* //팝업의 최대 크기지정 */
+    border-radius: 10px;
+    /* //둥글둥글한 디자인을 위해 각을 없앱니다. */
+    overflow: hidden;
+    /* //각을 없앴을 때 내부 영역이 튀어나오는걸 방지 */
+    background-color: #ffffff;
+    border: #2b6652 5px solid;
+    /* //배경색 */
+    /* //팝업이 허공에 떠있는 듯한 느낌을 주기 위한 그림자 효과. */
+    box-shadow: 5px 10px 10px 1px rgba(0, 0, 0, .3);
+}
+.popup_for_img{
+        width: 80%;
+        height: auto;
+        /* //반응형 이기 때문에 가로값은 100% */
+        border-radius: 10px;
+        /* //둥글둥글한 디자인을 위해 각을 없앱니다. */
+        overflow: hidden;
+        /* //각을 없앴을 때 내부 영역이 튀어나오는걸 방지 */
+        background-color: #ffffff;
+        border: #2b6652 5px solid;
+        /* //배경색 */
+        /* //팝업이 허공에 떠있는 듯한 느낌을 주기 위한 그림자 효과. */
+        box-shadow: 5px 10px 10px 1px rgba(0, 0, 0, .3);
+}
+
+.popup-head,
+.group_popup-head {
+    /* //머리 */
+    width: 100%;
+    /* //부모요소를 따라가기 때문에 굳이 가로값을 주지 않아도 되지만 일부 ie에서 인식 못하는 문제가 있음 */
+    height: 50px;
+    /* //헤드 영역 높이 */
+    display: flex;
+    /* //로고 이미지나 텍스트를 중앙 정렬하기 위한 flex 및 정렬 */
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-body.group_popup-body {
+    /* //몸통 */
+    width: 100%;
+    background-color: #ffffff;
+    /* //컨텐츠 영역의 배경색 */
+}
+
+.body-content {
+    /* //몸통 내부 컨텐츠 영역 */
+    width: 80%;
+    padding-top: 20px;
+    padding-bottom: 5px;
+    padding-left: 10%;
+    padding-right: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* //좌우에 내용이 붙으면 보기 안좋기 때문에 간격 띄움 */
+}
+
+.body-contentbox {
+    text-align: center;
+
+    color: #2b6652;
+    font-weight: bold;
+    word-break: break-word;
+    /* //단어가 짤리지 않음 */
+    overflow-y: auto;
+    /* //내부요소가 지정한 세로 값보다 클 경우 스크롤 생성 */
+    min-height: 100px;
+    /* //최소 높이 */
+    max-height: 200px;
+    /* //최대 높이 */
+}
+
+.popup-foot,
+.group_popup-foot {
+    /* //다리 */
+    width: 100%;
+    height: 50px;
+    text-align: center;
+}
+
+#popup_btn1,
+#popup_btn2,#popup_btn_close {
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: #2b6652;
+    color: white;
+}

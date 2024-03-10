@@ -1,0 +1,86 @@
+<html>
+    <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Register</title>
+    <script>
+        $(document).ready(function(){
+            $("#btn").click(function(){
+                var username = $("#username").val();
+                var password = $("#password").val();
+                var data={"username":username, "password":password};
+                $.getJSON("/getuser",function(user){
+                    console.log(user);
+                    var flag=0;
+                    for (var i = 0; i <user.length; i++) {
+                        if(user[i].name!=username){
+                            flag++;
+                        }
+                    };
+                    if(flag==user.length){
+                        $.ajax({
+                            url: "/registerUser",
+                            type: "post",
+                            data:data,
+                            success: function(data,txtStatus,xhr){
+                                alert("register success");
+                                return;
+                            },
+                            error: function(e){
+                                alert("register failed");
+                                return;
+                            }
+                        });
+                    }
+                    else{
+                        alert("이미 존재하는 아이디입니다.");
+                    }
+                });
+            });
+            $("#password").on("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    $("#btn").click();
+                }
+            });
+            $("#tologin").click(function(){
+                window.location="/login";
+            });
+
+        
+        });
+    </script>
+    <style>
+        #wrapper{
+            width: 400px;
+            height: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: #1e473a 3px solid;
+            text-align: center;
+        }
+        body{
+            text-align: center;
+        }
+        input[type=text], input[type=password], input[type=button]{
+            width: 300px;
+            height: 30px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+    </style>
+
+    </head>
+    <body>
+        <div id="wrapper">
+            <h1 style="color: #1e473a; margin-bottom: 100px;">SKKU CHAT</h1>
+            <h2 style="color: #1e473a;">회원가입</h2>
+            <input type="text" id="username" placeholder="Username" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
+            <input type="button" value="회원가입" id="btn"><br>
+            <input type="button" value="로그인 창으로" id="tologin"><br>
+        </div>
+
+    </body>
+</html>
